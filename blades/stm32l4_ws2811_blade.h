@@ -1,13 +1,15 @@
 #ifndef BLADES_WS2811_BLADE_H
 #define BLADES_WS2811_BLADE_H
 
+#include "abstract_blade.h"
+
 #ifdef ENABLE_WS2811
 #include "stm32l4_ws2811.h"
 
 // WS2811-type blade implementation.
 // Note that this class does nothing when first constructed. It only starts
 // interacting with pins and timers after Activate() is called.
-class WS2811_Blade : public SaberBase, CommandParser, Looper, public BladeBase {
+class WS2811_Blade : public AbstractBlade, CommandParser, Looper {
 public:
   WS2811_Blade(int num_leds,
 	       int data_pin,
@@ -17,13 +19,13 @@ public:
 	       int t0h_us,
 	       int t1h_us,
 	       PowerPinInterface* power) :
-    SaberBase(NOLINK),
+    AbstractBlade(),
     CommandParser(NOLINK),
     Looper(NOLINK),
     power_(power) {
     pin_.begin(data_pin, num_leds, byteorder, frequency, reset_us, t0h_us, t1h_us);
   }
-  const char* name() override { return "WS2811_Blade"; }
+  const char* name() override { return "STM32L4_WS2811_Blade"; }
 
   void Power(bool on) {
     while (!pin_.IsReadyForEndFrame());
@@ -52,7 +54,7 @@ public:
     pin_.EndFrame();
     CommandParser::Link();
     Looper::Link();
-    SaberBase::Link(this);
+    AbstractBlade::Activate();
   }
 
   // BladeBase implementation
@@ -64,11 +66,6 @@ public:
   }
   void set(int led, Color16 c) override {
     color_buffer[led] = c;
-  }
-  bool clash() override {
-    bool ret = clash_;
-    clash_ = false;
-    return ret;
   }
   void allow_disable() override {
     if (!on_) allow_disable_ = true;
@@ -85,8 +82,6 @@ public:
   void SB_Off() override {
     on_ = false;
   }
-
-  void SB_Clash() override { clash_=true; }
 
   void SB_Top() override {
     STDOUT.print("blade fps: ");
@@ -114,36 +109,38 @@ public:
 
 protected:
   void Loop() override {
-    STATE_MACHINE_BEGIN() 
+    STATE_MACHINE_BEGIN();
     while (true) {
-        while (!powered_) {
-          loop_counter_.Reset();
-          YIELD();
-        }
-        // Wait until it's our turn.
-        while (current_blade) YIELD();
-        if (allow_disable_) {
-          Power(on_);
-          continue;
-        }
-        current_blade = this;
-        current_style_->run(this);
-	while (!pin_.IsReadyForBeginFrame()) YIELD();
-	pin_.BeginFrame();
-	for (int i = 0; i < pin_.num_leds(); i++) pin_.Set(i, color_buffer[i]);
-	while (!pin_.IsReadyForEndFrame()) YIELD();
-	pin_.EndFrame();
-        loop_counter_.Update();
-        current_blade = NULL;
-        YIELD();
+      while (!powered_ || !current_style_) {
+	loop_counter_.Reset();
+	YIELD();
+      }
+      // Wait until it's our turn.
+      while (current_blade) YIELD();
+      if (allow_disable_) {
+	Power(on_);
+	continue;
+      }
+      current_blade = this;
+      current_style_->run(this);
+      while (!pin_.IsReadyForBeginFrame()) YIELD();
+      pin_.BeginFrame();
+      for (int i = 0; i < pin_.num_leds(); i++) {
+	pin_.Set(i, color_buffer[i]);
+	if (!(i & 0x1f)) Looper::DoHFLoop();
+      }
+      while (!pin_.IsReadyForEndFrame()) YIELD();
+      pin_.EndFrame();
+      loop_counter_.Update();
+      current_blade = NULL;
+      YIELD();
     }
     STATE_MACHINE_END();
   }
-
+  
 private:
   bool on_ = false;
   bool powered_ = false;
-  bool clash_ = false;
   bool allow_disable_ = false;
   LoopCounter loop_counter_;
 

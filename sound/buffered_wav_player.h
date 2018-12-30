@@ -11,6 +11,7 @@
 class BufferedWavPlayer : public VolumeOverlay<BufferedAudioStream<512> > {
 public:
   void Play(const char* filename) {
+    MountSDCard();
     EnableAmplifier();
     pause_ = true;
     clear();
@@ -21,6 +22,7 @@ public:
   }
 
   void PlayOnce(Effect* effect, float start = 0.0) {
+    MountSDCard();
     EnableAmplifier();
     STDOUT.print("unit = ");
     STDOUT.print(WhatUnit(this));
@@ -44,6 +46,8 @@ public:
     clear();
   }
 
+  void CloseFiles() override { wav.Close(); }
+
   const char* Filename() const {
     return wav.Filename();
   }
@@ -62,6 +66,12 @@ public:
   }
 
   float length() const { return wav.length(); }
+  float pos() const {
+    return wav.pos() - buffered() * (1.0f / AUDIO_RATE);
+  }
+  const char* filename() const {
+    return wav.filename();
+  }
 
   void AddRef() { refs_++; }
   void SubRef() { refs_--; }
