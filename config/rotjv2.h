@@ -2,9 +2,9 @@
 #include "proffieboard_v1_config.h"
 #define NUM_BLADES 1
 #define NUM_BUTTONS 2
-#define VOLUME 1300
+#define VOLUME 1900
 const unsigned int maxLedsPerStrip = 144;
-#define CLASH_THRESHOLD_G 1.0
+#define CLASH_THRESHOLD_G 2.0
 #define ENABLE_AUDIO
 #define ENABLE_MOTION
 #define ENABLE_WS2811
@@ -14,13 +14,14 @@ const unsigned int maxLedsPerStrip = 144;
 #ifdef CONFIG_PRESETS
 Preset presets[] = {
    { "Ksith_LS6_SS", "tracks/rotj.wav",
-   StylePtr<InOutHelper<SimpleClash<Lockup<Blast<AudioFlicker<Rgb<10,255,12>,White>,SteelBlue>,AudioFlicker<AudioFlicker<Yellow,Black>,White>>,Blue,40>,180,800,Black>>(),"ROTJv2"},
+   StylePtr<InOutHelper<SimpleClash<Lockup<Blast<Rgb<10,255,0>,SteelBlue,200,100,400>,AudioFlicker<AudioFlicker<Yellow,Black>,White>,AudioFlicker<AudioFlicker<Yellow,Black>,White>>,Rgb<220,220,70>,40>,180,800,Black>>(),"ROTJv2"},
    { "FF_Betrayal", "tracks/traya.wav",
    StylePtr<InOutHelper<SimpleClash<Lockup<Blast<Gradient<Cyan,LightCyan>,SteelBlue>,AudioFlicker<Gradient<GreenYellow,Yellow>,White>>,Gradient<DeepSkyBlue,Yellow>,40>,300,800,Black>>(),"cybluez"},
    { "noss/Ilum", "tracks/rotj.wav",
    StylePtr<InOutHelper<SimpleClash<Lockup<Blast<AudioFlicker<DeepSkyBlue,SteelBlue>,White>,AudioFlicker<AudioFlicker<Yellow,White>,White>>,Blue,40>,300,800,Black>>(),"steelBlue"},
    { "Ksith_LS6_SS", "tracks/mars.wav",
    StylePtr<InOutHelper<SimpleClash<Lockup<Blast<Pulsing<SpringGreen,GreenYellow,2500>,White>,AudioFlicker<HumpFlicker<LightYellow,LightCyan,50>,Red>>,HoneyDew,40>,180,800,Black>>(),"ROTJv2Pulse"},
+	
 // Transformer Blades //
 //Red
 	{ "noss/Glare", "tracks/kylo2.wav",
@@ -35,6 +36,7 @@ Preset presets[] = {
 	{ "noss/TERRAFORM", "tracks/mars.wav",
 	StylePtr<InOutHelper<SimpleClash<Lockup<Blast<ColorCycle<SteelBlue,0,1,DeepSkyBlue,100,800,4600>,Magenta>,BrownNoiseFlicker<Blue,GhostWhite,250>>,Yellow,40>,300,800,Black>>(),"XfmrBlue"},
 // End of Transformer Blades //
+
 	
 // Kylo type bladestyles //
 //OrangeRed_Yellow
@@ -45,6 +47,7 @@ Preset presets[] = {
 	StylePtr<InOutHelper<SimpleClash<Lockup<Blast<BrownNoiseFlicker<Green,LightYellow,350>,Red>,HumpFlicker<Green,Magenta,75>>,Cyan,80>,185,800,Black>>(),"KyloJedi"},
 // End of Kylo bladestyles //
 
+	
 // Pusling blade styles //
 //Sith Pulse
 	{ "SmthFuzz", "tracks/sith1.wav", 
@@ -56,6 +59,32 @@ Preset presets[] = {
 	{ "TthCrstl", "tracks/venus.wav",
 	StylePtr<InOutHelper<SimpleClash<Lockup<Blast<Pulsing<Rgb<150,0,255>,Rgb<50,0,230>,3500>,DarkOrange>,HumpFlicker<Rgb<185,95,0>,Rgb<255,100,150>,55>>,Rgb<195,100,255>,65>,195,800,Black>>(),"MacePulse"},
 // End of Pulsing blade styles //
+	
+//Weird, unstable and purple
+	{"proto1", "tracks/kylo2.wav",
+	StylePtr<InOutHelper<SimpleClash<Lockup<Blast<Pulsing<Rgb<160,80,255>,BrownNoiseFlicker<Red,DeepSkyBlue,250>,1450>,Strobe<Black,White,15,1>>,AudioFlicker<Blue,White>>,OnSpark<StyleFire<Yellow,Cyan,0,2,FireConfig<0,2000,5>,FireConfig<3000,0,0>,FireConfig<0,5000,10>,FireConfig<0,0,5>>,StyleFire<Blue,Cyan,0,2,FireConfig<0,2000,5>,FireConfig<3000,0,0>,FireConfig<0,5000,10>,FireConfig<0,0,5>>,200>,40>,300,800,Black>>(),"Mace2"},
+
+//IceFire Blue Unstable blade
+	{"proto2", "tracks/ro-vader.wav",
+	StylePtr<InOutHelper<SimpleClash<Lockup<Blast<Strobe<BrownNoiseFlicker<Cyan,Blue,500>,BrownNoiseFlicker<Green,White,50>,15,15>,Sparkle<White,Magenta,500,1024>,200,200,600>,AudioFlicker<Blue,White>,AudioFlicker<Blue,SpringGreen>>,Strobe<Blue,White,15,10>,100>,200,800,Black>>(),"IFBlue"},
+
+//IceFire Green Unstable blade v1
+	{"proto3", "tracks/ro-vader",
+StylePtr<InOutHelper<SimpleClash<Lockup<Blast<Strobe<BrownNoiseFlicker<SteelBlue,SpringGreen,500>,BrownNoiseFlicker<GreenYellow,White,50>,15,15>,Sparkle<White,Magenta,500,1024>,200,200,600>,AudioFlicker<Blue,White>,AudioFlicker<Blue,SpringGreen>>,Strobe<Blue,White,15,10>,100>,200,800,Black>>(),"IFGreen"},
+
+
+//IceFire Green Unstable blade v2
+	{"cyber", "tracks/kylo2.wav",
+	StylePtr<InOutHelper<SimpleClash<Lockup<Blast<Strobe<BrownNoiseFlicker<SteelBlue,SpringGreen,500>,BrownNoiseFlicker<GreenYellow,White,50>,15,15>,Sparkle<White,Magenta,500,1024>,200,200,600>,Cylon<StyleFire<Blue,Cyan,0,2,FireConfig<0,2000,5>,FireConfig<3000,0,0>,FireConfig<0,5000,10>,FireConfig<0,0,5>>,80,200,BrownNoiseFlicker<Magenta,Cyan,50>,98,300,1>,AudioFlicker<Blue,SpringGreen>>,Strobe<Blue,White,15,10>,100>,200,800,Black>>(),"IFGrn2"},
+
+
+
+	
+
+
+	
+
+	
 	
 // Begin default Proffie bladestyles //
    { "TeensySF", "tracks/venus.wav",
